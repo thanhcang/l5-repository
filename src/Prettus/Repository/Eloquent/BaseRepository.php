@@ -1,4 +1,5 @@
 <?php
+
 namespace Prettus\Repository\Eloquent;
 
 use Closure;
@@ -24,7 +25,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 /**
  * Class BaseRepository
  * @package Prettus\Repository\Eloquent
- * @author Anderson Andrade <contato@andersonandra.de>
+ * @author  Anderson Andrade <contato@andersonandra.de>
  */
 abstract class BaseRepository implements RepositoryInterface, RepositoryCriteriaInterface
 {
@@ -89,7 +90,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      */
     public function __construct(Application $app)
     {
-        $this->app = $app;
+        $this->app      = $app;
         $this->criteria = new Collection();
         $this->makeModel();
         $this->makePresenter();
@@ -257,7 +258,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     /**
      * Retrieve data array for populate field select
      *
-     * @param string $column
+     * @param string      $column
      * @param string|null $key
      *
      * @return \Illuminate\Support\Collection|array
@@ -272,7 +273,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     /**
      * Retrieve data array for populate field select
      * Compatible with Laravel 5.3
-     * @param string $column
+     * @param string      $column
      * @param string|null $key
      *
      * @return \Illuminate\Support\Collection|array
@@ -287,9 +288,9 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     /**
      * Sync relations
      *
-     * @param $id
-     * @param $relation
-     * @param $attributes
+     * @param      $id
+     * @param      $relation
+     * @param      $attributes
      * @param bool $detaching
      * @return mixed
      */
@@ -334,19 +335,6 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
 
         return $this->parserResult($results);
     }
-
-    /**
-     * Alias of All method
-     *
-     * @param array $columns
-     *
-     * @return mixed
-     */
-    public function get($columns = ['*'])
-    {
-        return $this->all($columns);
-    }
-
 
     /**
      * Retrieve first data of repository
@@ -416,8 +404,8 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     /**
      * Retrieve all data of repository, paginated
      *
-     * @param null $limit
-     * @param array $columns
+     * @param null   $limit
+     * @param array  $columns
      * @param string $method
      *
      * @return mixed
@@ -426,7 +414,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     {
         $this->applyCriteria();
         $this->applyScope();
-        $limit = is_null($limit) ? config('repository.pagination.limit', 15) : $limit;
+        $limit   = is_null($limit) ? config('repository.pagination.limit', 15) : $limit;
         $results = $this->model->{$method}($limit, $columns);
         $results->appends(app('request')->query());
         $this->resetModel();
@@ -437,7 +425,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     /**
      * Retrieve all data of repository, simple paginated
      *
-     * @param null $limit
+     * @param null  $limit
      * @param array $columns
      *
      * @return mixed
@@ -558,9 +546,9 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
             // we should pass data that has been casts by the model
             // to make sure data type are same because validator may need to use
             // this data to compare with data that fetch from database.
-            if( $this->versionCompare($this->app->version(), "5.2.*", ">") ){
+            if ($this->versionCompare($this->app->version(), "5.2.*", ">")) {
                 $attributes = $this->model->newInstance()->forceFill($attributes)->makeVisible($this->model->getHidden())->toArray();
-            }else{
+            } else {
                 $model = $this->model->newInstance()->forceFill($attributes);
                 $model->addVisible($this->model->getHidden());
                 $attributes = $model->toArray();
@@ -596,9 +584,9 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
             // we should pass data that has been casts by the model
             // to make sure data type are same because validator may need to use
             // this data to compare with data that fetch from database.
-            if( $this->versionCompare($this->app->version(), "5.2.*", ">") ){
+            if ($this->versionCompare($this->app->version(), "5.2.*", ">")) {
                 $attributes = $this->model->newInstance()->forceFill($attributes)->makeVisible($this->model->getHidden())->toArray();
-            }else{
+            } else {
                 $model = $this->model->newInstance()->forceFill($attributes);
                 $model->addVisible($this->model->getHidden());
                 $attributes = $model->toArray();
@@ -669,7 +657,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
         $temporarySkipPresenter = $this->skipPresenter;
         $this->skipPresenter(true);
 
-        $model = $this->find($id);
+        $model         = $this->find($id);
         $originalModel = clone $model;
 
         $this->skipPresenter($temporarySkipPresenter);
@@ -751,7 +739,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     /**
      * Load relation with closure
      *
-     * @param string $relation
+     * @param string  $relation
      * @param closure $closure
      *
      * @return $this
@@ -863,7 +851,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     public function getByCriteria(CriteriaInterface $criteria)
     {
         $this->model = $criteria->apply($this->model, $this);
-        $results = $this->model->get();
+        $results     = $this->model->get();
         $this->resetModel();
 
         return $this->parserResult($results);
@@ -915,7 +903,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     protected function applyScope()
     {
         if (isset($this->scopeQuery) && is_callable($this->scopeQuery)) {
-            $callback = $this->scopeQuery;
+            $callback    = $this->scopeQuery;
             $this->model = $callback($this->model);
         }
 
@@ -984,7 +972,6 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      *
      * @param mixed $result
      *
-     * @return mixed
      */
     public function parserResult($result)
     {
@@ -1007,5 +994,47 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
         }
 
         return $result;
+    }
+
+
+    public function countWheres(array $where)
+    {
+        $this->applyCriteria();
+        $this->applyScope();
+
+        $this->applyConditions($where);
+
+        $model = $this->model->count();
+        $this->resetModel();
+
+        return $this->parserResult($model);
+    }
+
+    /**
+     * @param array $where
+     * @return $this
+     */
+    public function where(array $where)
+    {
+        $this->applyConditions($where);
+        return $this;
+    }
+
+    /**
+     * @param       $field
+     * @param array $values
+     * @return $this
+     */
+    public function whereIn($field, array $values)
+    {
+        $this->model->whereIn($field, $values);
+        return $this;
+    }
+
+    public function get($columns = ['*'])
+    {
+        $model = $this->model->get($columns);
+        $this->resetModel();
+        return $this->parserResult($model);
     }
 }
